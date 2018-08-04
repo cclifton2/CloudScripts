@@ -4,8 +4,9 @@
   "Description" : "Script to create an S3 Bucket",
 
   "Resources" : {
-    "myBuctet": {
-      "Type": "AWS::S3::Bucket"
+    "myBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {}
     }
   }
 }
