@@ -1,8 +1,11 @@
 {
   "AWSTemplateFormatVersion" : "2010-09-09",
 
-  "Description" : "",
+  "Description" : "Script to create an S3 Bucket",
 
   "Resources" : {
+    "myBuctet": {
+      "Type": "AWS::S3::Bucket"
+    }
   }
 }
