@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Example of Multiple Resources Script
+Resources:
+  Ec2Instance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: "ami-0cf31d971a3ca20d6"  # Amazon Linux
+      InstanceType: t2.micro
+      Tags:
+        - Key: "Name"
+          Value: !Join [ " ", [EC2, Instance, with, Fn, Join]]
+      SecurityGroup: MySecurityGroup
+        - !Ref MySecurityGroup
+  MySecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Enable SSH Access via port 22
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 0.0.0.0/0
