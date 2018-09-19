@@ -9,8 +9,8 @@ Resources:
       Tags:
         - Key: "Name"
           Value: !Join [ " ", [EC2, Instance, with, Fn, Join]]
-      SecurityGroup: MySecurityGroup
-        - !Ref: MySecurityGroup
+      SecurityGroups:
+        - !Ref MySecurityGroup
   MySecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
