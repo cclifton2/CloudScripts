@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description:  An example using PseudoParameters
+Resources:
+  Ec2Instance:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      InstanceType: t2.micro
+      ImageId: "ami-0cf31d971a3ca20d6"  # Amazon Linux
+      SecurityGroups:
+        - !Ref MySecurityGroup
+      Tags:
+        - Key: "Name"
+          Value: !Join
+            - " "
+            - - "EC2 Instance for "
+              - !Ref AWS::Region
+  MySecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      SecurityGroupIngres:
+        IpProtocol: tcp
+        FromPort: "22"
+        ToPort: "22"
+        CidrIp: 0.0.0.0/0
+
