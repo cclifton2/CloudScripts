@@ -11,9 +11,10 @@ Conditions:
 Transforms:
   ...set of transforms...
 Resources:
-  DummyServer:
+  Logical ID:
     Type: "AWS::EC2::Instance"
     Properties:
       ImageId: ""
+      InstanceType: t2.micro
 Outputs:
   ...set of outputs...
