@@ -1,0 +1,11 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: An example to create an EC2 Instance
+Resources:
+  EC2Instance:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-0cf31d971a3ca20d6  # Amazon Linux AMI
+      Tags:
+        - Key: Name
+          Value: Chris' Example

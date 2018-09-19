@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: string
+Metadata:
+  ...template metadata...
+Parameters:
+  ...det of parameters...
+Mappings:
+  ...set of mappings...
+Conditions:
+  ...set of conditions...
+Transforms:
+  ...set of transforms...
+Resources:
+  DummyServer:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      ImageId: ""
+Outputs:
+  ...set of outputs...
