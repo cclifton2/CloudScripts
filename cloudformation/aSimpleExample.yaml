@@ -1,0 +1,11 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: A Simple example with Intrinsic Functions
+Resources:
+  EC2Instance:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      ImageId: "ami-0cf31d971a3ca20d6"  # Amazon Linux
+      InstanceType: t2.micro
+      Tags:
+        - Key: "Name"
+          Value: !Join [ " ", [EC2, Instsnce, with, Fn, Join]]
