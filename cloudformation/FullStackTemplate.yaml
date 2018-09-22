@@ -27,7 +27,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       SecurityGroups:
-        - !Ref ALBSecurityGroup
+      - !Ref ALBSecurityGroup
       Subnets: !Ref SubnetIDs
   LoadBalancerListener: # Port 88 Listener for ALB
     Type: AWS::ElasticLoadBalancingV2::Listener
@@ -36,9 +36,9 @@ Resources:
       Port: 80
       Protocol: HTTP
       DefaultActions:
-        - Type: forward
-          TargetGroupArn:
-            Ref: TargetGroup
+      - Type: forward
+      TargetGroupArn:
+        Ref: TargetGroup
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
@@ -53,7 +53,7 @@ Resources:
       MinSize: 1
       MaxSize: 3
       TargetGroupARNs:
-        - !Ref TargetGroup
+      - !Ref TargetGroup
   LaunchConfiguration:
     Type: AWS::AutoScaling::LaunchConfiguration
     Metadata:
@@ -65,9 +65,9 @@ Resources:
               httpd: []
               php: []
           files:
-            /var/www/html/index.php:
-              content: !Sub |
-                <?php print "Hello world - Chris was here!"; ?>
+            /var/www/html/index.php
+          content: !Sub |
+            <?php print "Hello world - Chris was here!"; ?>
           services:
             sysvinit:
               httpd:
@@ -77,12 +77,12 @@ Resources:
       KeyName: !Ref myKeyPair
       InstanceType: t2.micro
       SecurityGroups:
-        - !Ref EC2SecurityGroup
+      - !Ref EC2SecurityGroup
       ImageId:
         Fn::FindInMap:
-          - RegionMap
-          - !Ref AWS::Region
-          - AMI
+        - RegionMap
+        - !Ref AWS::Region
+        - AMI
       UserData:
         'Fn::Base64':
           !Sub |
@@ -97,10 +97,10 @@ Resources:
       GroupDescription: ALB Security Group
       VpcId: !Ref VpcId
       SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
   EC2SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -120,8 +120,8 @@ Resources:
         - EC2SecurityGroup
         - GroupId
 Outputs:
- PublicDns:
-   Description: The Public DNS
-     Value: !Sub 'http://${LoadBalancer.DNSName}'
+  PublicDns:
+    Description: The Public DNS
+    Value: !Sub 'http://${LoadBalancer.DNSName}'
 
 
