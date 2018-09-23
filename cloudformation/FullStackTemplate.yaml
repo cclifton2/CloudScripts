@@ -14,6 +14,8 @@ Mappings:
   RegionMap:
     us-east-1:
       AMI: ami-1853ac65
+    us-east-2:
+      AMI: ami-0b59bfac6be064b78
     us-west-1:
       AMI: ami-bf5540df
     eu-west-1:
@@ -29,7 +31,7 @@ Resources:
       SecurityGroups:
       - !Ref ALBSecurityGroup
       Subnets: !Ref SubnetIDs
-  LoadBalancerListener: # Port 88 Listener for ALB
+  LoadBalancerListener: # Port 80 Listener for ALB
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       LoadBalancerArn: !Ref LoadBalancer
@@ -37,8 +39,8 @@ Resources:
       Protocol: HTTP
       DefaultActions:
       - Type: forward
-      TargetGroupArn:
-        Ref: TargetGroup
+        TargetGroupArn:
+          Ref: TargetGroup
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
@@ -113,15 +115,14 @@ Resources:
       ToPort: 80
       SourceSecurityGroupId:
         !GetAtt
-        - ALBSecurityGroup
-        - GroupId
+      - ALBSecurityGroup
+      - GroupId
       GroupId:
         !GetAtt
-        - EC2SecurityGroup
-        - GroupId
+      - EC2SecurityGroup
+      - GroupId
 Outputs:
   PublicDns:
     Description: The Public DNS
     Value: !Sub 'http://${LoadBalancer.DNSName}'
-
 
