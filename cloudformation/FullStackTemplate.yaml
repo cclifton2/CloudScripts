@@ -16,14 +16,6 @@ Mappings:
             AMI: ami-1853ac65
         us-east-2:
             AMI: ami-0b59bfac6be064b78
-        us-west-1:
-            AMI: ami-bf5540df
-        eu-west-1:
-            AMI: ami-3bfab942
-        ap-southwesdt-1:
-            AMI: ami-e2adf99e
-        ap-southeast-2:
-            AMI: ami-43874721
 Resources:
     LoadBalancer: # Application Load Balancer
         Type: AWS::ElasticLoadBalancingV2::LoadBalancer
