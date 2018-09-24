@@ -68,12 +68,12 @@ Resources:
                             php: []
                     files:
                         /var/www/html/index.php
-                        content: !Sub |
+                    content: !Sub |
                             <?php print "Hello world - Chris was here!"; ?>
                     services:
                         sysvinit:
                             httpd:
-                            enabled: true
+                                enabled: true
                                 ensureRunning: true
         Properties:
             KeyName: !Ref myKeyPair
