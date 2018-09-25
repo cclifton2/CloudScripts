@@ -13,7 +13,6 @@ Resources:
                   Value: WebVpc
     InternetGateway:
         Type: AWS::EC2::InternetGateway
-        Properties:
     VPCGatewayAttachment:
         Type: AWS::EC2::VPCGatewayAttachment
         Properties:
@@ -55,14 +54,14 @@ Resources:
         Type: AWS::EC2::SubnetRouteTableAssociation
         Properties:
             RouteTableId: !Ref RouteTable
-            SubnetId: SubnetWeb01
+            SubnetId: !Ref SubnetWeb01
     SubnetWeb02RouteTableAssociation:
         Type: AWS::EC2::SubnetRouteTableAssociation
         Properties:
             RouteTableId: !Ref RouteTable
-            SubnetId: SubnetWeb02
+            SubnetId: !Ref SubnetWeb02
     SubnetWeb03RouteTableAssociation:
         Type: AWS::EC2::SubnetRouteTableAssociation
         Properties:
             RouteTableId: !Ref RouteTable
-            SubnetId: SubnetWeb03
+            SubnetId: !Ref SubnetWeb03
