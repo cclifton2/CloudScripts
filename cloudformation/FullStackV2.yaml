@@ -1,5 +1,11 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Creation of a fell Stack Deployment with Infrastructure
+Mappings:
+    RegionMap:
+        us-east-1:
+            AMI: ami-04681a1dbd79675a5
+        us-east-2:
+            AMI: ami-0b59bfac6be064b78
 Resources:
     VPC:
         Type: AWS::EC2::VPC
@@ -65,3 +71,29 @@ Resources:
         Properties:
             RouteTableId: !Ref RouteTable
             SubnetId: !Ref SubnetWeb03
+    LoadBalancer:  # Application Load Balancer
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Properties:
+            SecurityGroups:
+                !Ref ALBLoadBalancer
+            Subnets:
+                !Ref SubnetIDs
+    LoadBalancerListner: # Port 80 Listner for ALB
+        Type: AWS::ElasticLoadBalancingV2::Listener
+        Propertiees:
+            LoadBalancerARN: !Ref LoadBalancer
+            Port: 80
+            Protocol: HTTP
+            DefaultActions:
+                - Type: foreward
+                  TargetGroupARN: !Ref TargetGroup
+    TargetGroup:
+        Type: AWS::ElasticLoadBalancingV2::TargetGroup
+        Properties:
+            Port: 80
+            Protocol: HTTP
+            VpcId: !Ref VPC
+    AutoScalingGroup:
+            Type: AWS::AutoScaling::AutoScalingGroup
+            Properties:
+                AvailabilityZones: !GetAzs
