@@ -1,9 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Creation of a fell Stack Deployment with Infrastructure
-Parameters:
-    ...det of parameters...
-Mappings:
-    ...set of mappings...
 Resources:
     VPC:
         Type: AWS::EC2::VPC
@@ -11,7 +7,7 @@ Resources:
             CidrBlock: 10.1.0.0/16
             EnableDnsSupport: true
             EnableDnsHostnames: true
-            InstanceTenacity: default
+            InstanceTenancy: default
             Tags:
                 - Key: Name
                   Value: WebVpc
@@ -50,7 +46,7 @@ Resources:
             VpcId: !Ref VPC
     InternetRoute:
         Type: AWS::EC2::Route
-        DependsUpon: InternetGateway
+        DependsOn: InternetGateway
         Properties:
             DestinationCidrBlock: 0.0.0.0/0
             GatewayId: !Ref InternetGateway
@@ -70,5 +66,3 @@ Resources:
         Properties:
             RouteTableId: !Ref RouteTable
             SubnetId: SubnetWeb03
-Outputs:
-    ...set of outputs...
