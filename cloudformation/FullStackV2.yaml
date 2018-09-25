@@ -1,0 +1,74 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Creation of a fell Stack Deployment with Infrastructure
+Parameters:
+    ...det of parameters...
+Mappings:
+    ...set of mappings...
+Resources:
+    VPC:
+        Type: AWS::EC2::VPC
+        Properties:
+            CidrBlock: 10.1.0.0/16
+            EnableDnsSupport: true
+            EnableDnsHostnames: true
+            InstanceTenacity: default
+            Tags:
+                - Key: Name
+                  Value: WebVpc
+    InternetGateway:
+        Type: AWS::EC2::InternetGateway
+        Properties:
+    VPCGatewayAttachment:
+        Type: AWS::EC2::VPCGatewayAttachment
+        Properties:
+            VpcId: !Ref VPC
+            InternetGatewayId: !Ref InternetGateway
+    SubnetWeb01:
+        Type: AWS::EC2::Subnet
+        Properties:
+            AvailabilityZone: us-east-2a
+            VpcId: !Ref VPC
+            CidrBlock: 10.1.1.0/24
+            MapPublicIpOnLaunch: true
+    SubnetWeb02:
+        Type: AWS::EC2::Subnet
+        Properties:
+            AvailabilityZone: us-east-2b
+            VpcId: !Ref VPC
+            CidrBlock: 10.1.2.0/24
+            MapPublicIpOnLaunch: true
+    SubnetWeb03:
+        Type: AWS::EC2::Subnet
+        Properties:
+            AvailabilityZone: us-east-2c
+            VpcId: !Ref VPC
+            CidrBlock: 10.1.3.0/24
+            MapPublicIpOnLaunch: true
+    RouteTable:
+        Type: AWS::EC2::RouteTable
+        Properties:
+            VpcId: !Ref VPC
+    InternetRoute:
+        Type: AWS::EC2::Route
+        DependsUpon: InternetGateway
+        Properties:
+            DestinationCidrBlock: 0.0.0.0/0
+            GatewayId: !Ref InternetGateway
+            RouteTableId: !Ref RouteTable
+    SubnetWeb01RouteTableAssociation:
+        Type: AWS::EC2::SubnetRouteTableAssociation
+        Properties:
+            RouteTableId: !Ref RouteTable
+            SubnetId: SubnetWeb01
+    SubnetWeb02RouteTableAssociation:
+        Type: AWS::EC2::SubnetRouteTableAssociation
+        Properties:
+            RouteTableId: !Ref RouteTable
+            SubnetId: SubnetWeb02
+    SubnetWeb03RouteTableAssociation:
+        Type: AWS::EC2::SubnetRouteTableAssociation
+        Properties:
+            RouteTableId: !Ref RouteTable
+            SubnetId: SubnetWeb03
+Outputs:
+    ...set of outputs...
