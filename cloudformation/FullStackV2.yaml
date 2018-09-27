@@ -76,8 +76,7 @@ Resources:
         Properties:
             SecurityGroups:
                 !Ref ALBLoadBalancer
-            Subnets:
-                !Ref SubnetIDs
+            Subnets: !Ref SubnetIDs
     LoadBalancerListner: # Port 80 Listner for ALB
         Type: AWS::ElasticLoadBalancingV2::Listener
         Propertiees:
@@ -97,3 +96,53 @@ Resources:
             Type: AWS::AutoScaling::AutoScalingGroup
             Properties:
                 AvailabilityZones: !GetAzs
+                LaunchConfigurationName: !Ref LaunchConfiguration
+                MinSize: 2
+                MaxSize: 6
+                TargetGroupARN: !Ref TargetGroup
+    LaunchConfiguration:
+        Type: AWS::AutoScaling::LaunchConfiguration
+        Metadata:
+            Comment: Install php and httpd
+            AWS::CloudFormstion::Init:
+                config:
+                    packages:
+                        yum:
+                            httpd: []
+                            php: []
+                    files:
+                        /var/www/html/index.php
+                        content: !Sub |
+                            <? php print "Hello World - Chris was here!"; ?>
+                        services:
+                            sysvinit:
+                                httpd:
+                                    enabled: true
+                                    ensureRunning: true
+        Properties:
+            KeyName: !Ref myKeyPair
+            InstanceType: t2.micro
+            SecurityGroups:
+              - !Ref EC2SecurityGroup
+            ImageId:
+                Fn::FindInMap:
+                - RegionMap
+                - !Ref AWS::Region
+                - AMI
+            UserData:
+                'Fn::Base64':
+                  !Sub |
+                    #!/bin/bash -xe
+                    # Ensure AWS CFN Bootstrap is the latest
+                    yum install -y aws-cfn-bootstrap
+                    # Install the files and packages from the metadata
+                    /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource LaunchConfiguration --region ${AWS::Region}
+    ALBSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+            Properties:
+                GroupDescription: ALB Security Group
+                VpcId: !Ref VPC
+                SecurityGroupIngress:
+                    - IpProtocol: tcp
+
+
