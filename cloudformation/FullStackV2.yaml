@@ -1,5 +1,9 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Creation of a Full Web Stack Deployment with Infrastructure
+Parameters:
+    myKeyPair:
+        Description: Amazon EC2 Key Pair
+        Type: AWS::EC2::KeyPair::KeyName
 Mappings:
     RegionMap:
         us-east-1:
@@ -76,7 +80,10 @@ Resources:
         Properties:
             SecurityGroups:
             - !Ref ALBSecurityGroup
-            Subnets: !Ref SubnetIDs
+            Subnets:
+            - !Ref SubnetWeb01
+            - !Ref SubnetWeb02
+            - !Ref SubnetWeb03
     LoadBalancerListener: # Port 80 Listener for ALB
         Type: AWS::ElasticLoadBalancingV2::Listener
         Properties:
@@ -85,7 +92,8 @@ Resources:
             Protocol: HTTP
             DefaultActions:
                 - Type: foreward
-                  TargetGroupARN: !Ref TargetGroup
+                TargetGroupARNs:
+                - TargetGroup
     TargetGroup:
         Type: AWS::ElasticLoadBalancingV2::TargetGroup
         Properties:
@@ -99,7 +107,8 @@ Resources:
                 LaunchConfigurationName: !Ref LaunchConfiguration
                 MinSize: 2
                 MaxSize: 6
-                TargetGroupARNs: !Ref TargetGroup
+                TargetGroupARNs:
+                - TargetGroup
     LaunchConfiguration:
         Type: AWS::AutoScaling::LaunchConfiguration
         Metadata:
@@ -110,17 +119,17 @@ Resources:
                         yum:
                             httpd: []
                             php: []
-                    files:
-                        /var/www/html/index.php
-                        content: !Sub |
-                                <? php print "Hello World - Chris was here!"; ?>
-                        services:
-                            sysvinit:
-                                httpd:
-                                    enabled: true
-                                    ensureRunning: true
+                files:
+                    /var/www/html/index.php
+                content: !Sub |
+                        <? php print "Hello World - Chris was here!"; ?>
+                services:
+                    sysvinit:
+                        httpd:
+                            enabled: true
+                            ensureRunning: true
         Properties:
-            KeyName: myKeyPair
+            KeyName: KeyPair
             InstanceType: t2.micro
             SecurityGroups:
               - !Ref EC2SecurityGroup
