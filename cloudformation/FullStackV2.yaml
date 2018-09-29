@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Creation of a fell Stack Deployment with Infrastructure
+Description: Creation of a Full Web Stack Deployment with Infrastructure
 Mappings:
     RegionMap:
         us-east-1:
@@ -75,12 +75,12 @@ Resources:
         Type: AWS::ElasticLoadBalancingV2::LoadBalancer
         Properties:
             SecurityGroups:
-                !Ref ALBLoadBalancer
+            - !Ref ALBSecurityGroup
             Subnets: !Ref SubnetIDs
-    LoadBalancerListner: # Port 80 Listner for ALB
+    LoadBalancerListener: # Port 80 Listener for ALB
         Type: AWS::ElasticLoadBalancingV2::Listener
-        Propertiees:
-            LoadBalancerARN: !Ref LoadBalancer
+        Properties:
+            LoadBalancerArn: !Ref LoadBalancer
             Port: 80
             Protocol: HTTP
             DefaultActions:
@@ -95,11 +95,11 @@ Resources:
     AutoScalingGroup:
             Type: AWS::AutoScaling::AutoScalingGroup
             Properties:
-                AvailabilityZones: !GetAzs
+                AvailabilityZones: !GetAZs
                 LaunchConfigurationName: !Ref LaunchConfiguration
                 MinSize: 2
                 MaxSize: 6
-                TargetGroupARN: !Ref TargetGroup
+                TargetGroupARNs: !Ref TargetGroup
     LaunchConfiguration:
         Type: AWS::AutoScaling::LaunchConfiguration
         Metadata:
@@ -113,14 +113,14 @@ Resources:
                     files:
                         /var/www/html/index.php
                         content: !Sub |
-                            <? php print "Hello World - Chris was here!"; ?>
+                                <? php print "Hello World - Chris was here!"; ?>
                         services:
                             sysvinit:
                                 httpd:
                                     enabled: true
                                     ensureRunning: true
         Properties:
-            KeyName: !Ref myKeyPair
+            KeyName: myKeyPair
             InstanceType: t2.micro
             SecurityGroups:
               - !Ref EC2SecurityGroup
@@ -139,10 +139,35 @@ Resources:
                     /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource LaunchConfiguration --region ${AWS::Region}
     ALBSecurityGroup:
         Type: AWS::EC2::SecurityGroup
-            Properties:
-                GroupDescription: ALB Security Group
-                VpcId: !Ref VPC
-                SecurityGroupIngress:
-                    - IpProtocol: tcp
+        Properties:
+            GroupDescription: ALB Security Group
+            VpcId: !Ref VPC
+            SecurityGroupIngress:
+                - IpProtocol: tcp
+                  FromPort: 80
+                  ToPort: 80
+                  CidrIp: 0.0.0.0/0
+    EC2SecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupDescription: EC2 Instance
+    EC2InboundRule: # EC2 can only accept traffic from ALB
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+            IpProtocol: tcp
+            FromPort: 80
+            ToPort: 80
+            SourceSecurityGroupId:
+                !GetAtt
+                - ALBSecurityGroup
+                - GroupId
+            GroupId:
+                !GetAtt
+                - EC2SecurityGroup
+                - GroupId
+Outputs:
+    PublicDns:
+        Description: The Public DNS
+        Value: !Sub 'http://${LoadBalancer.DNSName}'
 
 
