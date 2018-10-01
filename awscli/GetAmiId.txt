@@ -1,0 +1,4 @@
+aws ec2 describe-images --image-id ami-0b59bfac6be064b78
+
+
+aws ec2 describe-images --owners amazon --filters "Name=platform, Values=Windows" "Name=root-device-type, Values=ebs"
