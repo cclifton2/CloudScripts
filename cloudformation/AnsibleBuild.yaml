@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: An example to create an EC2 Instance and install Ansible on the server for use.
+Mappings:
+    RegionMap:
+        us-east-1:
+            AMI: ami-04681a1dbd79675a5
+        us-east-2:
+            AMI: ami-0b59bfac6be064b78
+Resources:
+    EC2Instance:
+        Type: "AWS::EC2::Instance"
+        Properties:
+            InstanceType: t2.micro
+            ImageId: ami-0b59bfac6be064b78  # Amazon Linux AMI
+            Tags:
+            - Key: Name
+              Value: AnsibleServer
+    LaunchTemplate:
+        Type: AWS::EC2::LaunchTemplate
+        Properties:
