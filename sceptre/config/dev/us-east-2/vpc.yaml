@@ -1,0 +1,3 @@
+template_path: templates/vpc.json
+parameters:
+    CidrBlock: 10.2.0.0/16
