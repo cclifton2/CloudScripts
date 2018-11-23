@@ -1,0 +1,30 @@
+# _*_ mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  # General Vagrant VM Configuration
+  config.vm.box = "geerlingguy/centos7"
+  config.ssh.insert_key = false
+  config.vm.synced_folder ".", "/vagrant", disabled: false
+  config.vm.provider :virtualbox do |v|
+    v.memory = 256
+    v.linked_clone = true
+  end
+	
+  # Ansible server 1
+  config.vm.define "ansible01" do |ansible|
+    # ansible.vm.provision "shell", path: "ansibleInstall.sh"
+    ansible.vm.hostname = "ansible.test"
+    ansible.vm.network :private_network, ip: "192.168.60.4"
+	
+  end
+
+  # Application server 1
+  config.vm.define "app1" do |app|
+    # app.vm.provision "shell", path: "update.sh"
+    app.vm.hostname = "app1.test"
+    app.vm.network :private_network, ip: "192.168.60.5"
+  end
+end
